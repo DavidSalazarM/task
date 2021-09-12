@@ -1,5 +1,6 @@
 from re import I
 from django.shortcuts import render
+from rest_framework.exceptions import bad_request
 from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
 from .serializers import MainTableSerializer
@@ -13,19 +14,20 @@ from django.core.exceptions import BadRequest
 
 
 
+
 # Create your views here.
 def check(check, check_2):
     today = datetime.now()
     now_1 = today.strftime("%Y-%m-%d %H:%M")
     now_2 = today.strftime("%Y-%m-%d")
     if check > now_1 or check_2 > now_2:
-        raise BadRequest('bad data')
+        return True
     
 
 
   
 
-class MainTable(APIView):
+class Main(APIView):
 
     def get(self, request, format=None):
         queryset = MainTableModel.objects.all()
@@ -35,13 +37,14 @@ class MainTable(APIView):
     def post(self, request, format=None):
         data = JSONParser().parse(request)
         serializer = MainTableSerializer(data=data)
-        check(data['date_and_time_attention'],data['application_date'])
         if serializer.is_valid():
+            if check(data['date_and_time_attention'],data['application_date']):
+                return JsonResponse({'error':'the time entered cannot be greater than today'},status=400)
             serializer.save()
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
-class MainTableDetail(APIView):
+class MainDetail(APIView):
     def get_object(self, pk):
         try:
             return MainTableModel.objects.get(pk=pk)
@@ -56,10 +59,11 @@ class MainTableDetail(APIView):
     def put(self, request, pk, format=None):
         queryset = self.get_object(pk)
         serializer = MainTableSerializer(queryset, data=request.data)
-        check(request.data['date_and_time_attention'],request.data['application_date'])
         if serializer.is_valid():
+            if check(request.data['date_and_time_attention'],request.data['application_date']):
+                return JsonResponse({'error':'the time entered cannot be greater than today'},status=400)
             serializer.save()
-            return JsonResponse(serializer.data)
+            return JsonResponse(serializer.data, status = 200)
         return JsonResponse(serializer.errors, status=400)
 
     def delete(self, request, pk, format=None):
