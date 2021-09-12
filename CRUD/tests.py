@@ -5,17 +5,18 @@ import json
 
 # Create your tests here.
 
+
 class MainTest(APITestCase):
 
     def test_main_post(self):
         request_data = {
-        "date_and_time_attention": "2010-10-20 10:00",
-        "end_time_attention": "12:30",
-        "company": "Carritos SA",
-        "city": "Bogota",
-        "subject": "algo importante",
-        "answer": "no era tan importante",
-        "application_date": "2010-10-10"
+            "date_and_time_attention": "2010-10-20 10:00",
+            "end_time_attention": "12:30",
+            "company": "Carritos SA",
+            "city": "Bogota",
+            "subject": "algo importante",
+            "answer": "no era tan importante",
+            "application_date": "2010-10-10"
         }
 
         response = self.client.post('/crud/', request_data, format='json')
@@ -39,12 +40,18 @@ class MainTest(APITestCase):
             "subject": "",
             "answer": "",
             "application_date": ""
-            }
+        }
         response = self.client.post('/crud/', request_data, format='json')
         assert response.status_code == 400
         data = json.loads(response.content)
-        assert data == {'date_and_time_attention': ['Datetime has wrong format. Use one of these formats instead: YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z].'], 'end_time_attention': ['Time has wrong format. Use one of these formats instead: hh:mm[:ss[.uuuuuu]].'], 'company': ['This field may not be blank.'], 'city': ['This field may not be blank.'], 'subject': ['This field may not be blank.'], 'answer': ['This field may not be blank.'], 'application_date': ['Date has wrong format. Use one of these formats instead: YYYY-MM-DD.']}
-        
+        assert data == {
+            'date_and_time_attention': ['Datetime has wrong format. Use one of these formats instead: YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z].'],
+            'end_time_attention': ['Time has wrong format. Use one of these formats instead: hh:mm[:ss[.uuuuuu]].'],
+            'company': ['This field may not be blank.'],
+            'city': ['This field may not be blank.'],
+            'subject': ['This field may not be blank.'],
+            'answer': ['This field may not be blank.'],
+            'application_date': ['Date has wrong format. Use one of these formats instead: YYYY-MM-DD.']}
 
     def test_try_main_post_with_bad_values(self):
         request_data = {
@@ -55,13 +62,16 @@ class MainTest(APITestCase):
             "subject": "algo importante",
             "answer": "no era tan importante",
             "application_date": "lo mismo"
-            }
-        
+        }
+
         response = self.client.post('/crud/', request_data, format='json')
         assert response.status_code == 400
         data = json.loads(response.content)
-        assert data == {'date_and_time_attention': ['Datetime has wrong format. Use one of these formats instead: YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z].'], 'end_time_attention': ['Time has wrong format. Use one of these formats instead: hh:mm[:ss[.uuuuuu]].'], 'application_date': ['Date has wrong format. Use one of these formats instead: YYYY-MM-DD.']}        
-        
+        assert data == {
+            'date_and_time_attention': ['Datetime has wrong format. Use one of these formats instead: YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z].'],
+            'end_time_attention': ['Time has wrong format. Use one of these formats instead: hh:mm[:ss[.uuuuuu]].'],
+            'application_date': ['Date has wrong format. Use one of these formats instead: YYYY-MM-DD.']}
+
     def test_try_main_post_with_bad_values(self):
         request_data = {
             "date_and_time_attention": "2010/10/20 10-00",
@@ -71,13 +81,14 @@ class MainTest(APITestCase):
             "subject": "algo importante",
             "answer": "no era tan importante",
             "application_date": "10-30-2010"
-            }
-        
+        }
+
         response = self.client.post('/crud/', request_data, format='json')
         assert response.status_code == 400
         data = json.loads(response.content)
-        assert data == {'date_and_time_attention': ['Datetime has wrong format. Use one of these formats instead: YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z].'], 'application_date': ['Date has wrong format. Use one of these formats instead: YYYY-MM-DD.']}
-     
+        assert data == {
+            'date_and_time_attention': ['Datetime has wrong format. Use one of these formats instead: YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z].'],
+            'application_date': ['Date has wrong format. Use one of these formats instead: YYYY-MM-DD.']}
 
     def test_try_main_post_with_bad_format(self):
         request_data = {
@@ -88,29 +99,32 @@ class MainTest(APITestCase):
             "subject": "algo importante",
             "answer": "no era tan importante",
             "application_date": "lo mismo"
-            }
-        
+        }
+
         response = self.client.post('/crud/', request_data, format='json')
         assert response.status_code == 400
         data = json.loads(response.content)
-        assert data == {'date_and_time_attention': ['Datetime has wrong format. Use one of these formats instead: YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z].'], 'end_time_attention': ['Time has wrong format. Use one of these formats instead: hh:mm[:ss[.uuuuuu]].'], 'application_date': ['Date has wrong format. Use one of these formats instead: YYYY-MM-DD.']}        
-          
+        assert data == {
+            'date_and_time_attention': ['Datetime has wrong format. Use one of these formats instead: YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z].'],
+            'end_time_attention': ['Time has wrong format. Use one of these formats instead: hh:mm[:ss[.uuuuuu]].'],
+            'application_date': ['Date has wrong format. Use one of these formats instead: YYYY-MM-DD.']}
 
     def test_try_main_post_with_date_greater_than_today(self):
         request_data = {
-        "date_and_time_attention": "2030-10-20 10:00",
-        "end_time_attention": "12:30",
-        "company": "Carritos SA",
-        "city": "Bogota",
-        "subject": "algo importante",
-        "answer": "no era tan importante",
-        "application_date": "2050-10-10"
+            "date_and_time_attention": "2030-10-20 10:00",
+            "end_time_attention": "12:30",
+            "company": "Carritos SA",
+            "city": "Bogota",
+            "subject": "algo importante",
+            "answer": "no era tan importante",
+            "application_date": "2050-10-10"
         }
 
-        response = self.client.post('/crud/', request_data, format='json') 
+        response = self.client.post('/crud/', request_data, format='json')
         assert response.status_code == 400
         data = json.loads(response.content)
-        assert data == {'error': 'the time entered cannot be greater than today'}
+        assert data == {
+            'error': 'the time entered cannot be greater than today'}
 
     def test_main_get(self):
         db = MainTableModel.objects.create(**{
@@ -121,8 +135,8 @@ class MainTest(APITestCase):
             "subject": "algo importante",
             "answer": "no era tan importante",
             "application_date": "2010-10-10"
-            })
-        
+        })
+
         response = self.client.get('/crud/', format='json')
         assert response.status_code == 200
         data = json.loads(response.content)
@@ -135,6 +149,7 @@ class MainTest(APITestCase):
         assert data[0]['answer'] == "no era tan importante"
         assert data[0]['application_date'] == "2010-10-10"
 
+
 class MainDetailTest(APITestCase):
 
     def test_get_main_by_id(self):
@@ -146,7 +161,7 @@ class MainDetailTest(APITestCase):
             "subject": "algo importante",
             "answer": "no era tan importante",
             "application_date": "2010-10-10"
-            })
+        })
 
         response = self.client.get('/crud/{}/'.format(db.id), format='json')
         assert response.status_code == 200
@@ -173,7 +188,7 @@ class MainDetailTest(APITestCase):
             "subject": "algo importante",
             "answer": "no era tan importante",
             "application_date": "2010-10-10"
-            })
+        })
 
         request_data = {
             "date_and_time_attention": "2015-10-20 10:00",
@@ -183,9 +198,10 @@ class MainDetailTest(APITestCase):
             "subject": "no era tan importante",
             "answer": "algo importante",
             "application_date": "2012-10-10"
-            }
+        }
 
-        response = self.client.put('/crud/{}/'.format(db.id),request_data, format='json')
+        response = self.client.put(
+            '/crud/{}/'.format(db.id), request_data, format='json')
         assert response.status_code == 200
         data = json.loads(response.content)
         assert data["id"] == db.id
@@ -196,7 +212,6 @@ class MainDetailTest(APITestCase):
         assert data['subject'] == request_data['subject']
         assert data['answer'] == request_data['answer']
         assert data['application_date'] == request_data['application_date']
-        
 
     def test_get_main_by_id(self):
         db = MainTableModel.objects.create(**{
@@ -207,10 +222,9 @@ class MainDetailTest(APITestCase):
             "subject": "algo importante",
             "answer": "no era tan importante",
             "application_date": "2010-10-10"
-            })
+        })
 
         response = self.client.delete('/crud/{}/'.format(db.id), format='json')
         assert response.status_code == 204
         response = self.client.get('/crud/{}/'.format(db.id), format='json')
         assert response.status_code == 404
-        

@@ -7,5 +7,5 @@ class MainTable(models.Model):
     company = models.CharField(max_length=100, null=False, blank=False)
     city = models.CharField(max_length=50, null=False, blank=False)
     subject = models.CharField(max_length=100, null=False, blank=False)
-    answer =  models.TextField(null=False, blank=True)
+    answer = models.TextField(null=False, blank=True)
     application_date = models.DateField(null=False, blank=False)
