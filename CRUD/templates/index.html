@@ -1,0 +1,40 @@
+{% load rest_framework %}
+<html>
+   <body>
+      <form action="{% url 'index' %}" method="POST">
+         {% csrf_token %}
+         {% render_form serializer_form %}
+         <input type="submit" value=Save>
+      </form>
+      {% if message %}
+      {{ message }}
+      {% endif %}
+      {% if registers %}
+      <h1>Register</h1>
+      <ul>
+         {% for register in registers %}
+         <li>
+            date and time attention: {{ register.date_and_time_attention }} <br>
+            end time attention: {{ register.end_time_attention }} <br>
+            company: {{ register.company }} <br>
+            city: {{ register.city }} <br>
+            subject: {{ register.subject }} <br>
+            answer: {{ register.answer }} <br>
+            application_date: {{ register.application_date }} <br><br>
+            <div>
+               <form action="{% url 'delete' pk=register.id %}" method="POST">
+                  {% csrf_token %}
+                  <input type="submit" value="Delete">
+               </form>
+               <form action="{% url 'detail' pk=register.id %}" method="GET">
+                  {% csrf_token %}
+                  <input type="submit" value="Update">
+               </form>
+            </div>
+         </li>
+         <br>
+         {% endfor %}
+      </ul>
+      {% endif %}
+   </body>
+</html>

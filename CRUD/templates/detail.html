@@ -1,0 +1,18 @@
+{% load rest_framework %}
+<html>
+   <body>
+      <h1>Register Update</h1>
+      <form action="{% url 'detail' pk=queryset.id %}" method="POST">
+         {% csrf_token %}
+         {% render_form serializer %}
+         <input type="submit" value="Update">
+      </form>
+      <form action="{% url 'index' %}" method="GET">
+         {% csrf_token %}
+         <input  type="submit" value="List">
+      </form>
+      {% if message %}
+      {{ message }}
+      {% endif %}
+   </body>
+</html>

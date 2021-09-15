@@ -1,47 +1,58 @@
 from re import I
 from rest_framework.views import APIView
-from rest_framework.parsers import JSONParser
 from .serializers import MainTableSerializer
-from django.http import JsonResponse
 from CRUD.models import MainTable as MainTableModel
 from datetime import datetime
 from django.http import Http404
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.renderers import TemplateHTMLRenderer
+from django.shortcuts import redirect
 
 
 # Create your views here.
 def check(check, check_2):
     today = datetime.now()
+    print(today)
     now_1 = today.strftime("%Y-%m-%d %H:%M")
-    now_2 = today.strftime("%Y-%m-%d")
+    now_2 = today.strftime("%Y-%m-%d %H:%M")
     if check > now_1 or check_2 > now_2:
         return True
 
 
 class Main(APIView):
-    
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'index.html'
+
     def get(self, request, format=None):
         queryset = MainTableModel.objects.all()
         serializer = MainTableSerializer(queryset, many=True)
-        return JsonResponse(serializer.data, safe=False, status=200)
+        serializer_form = MainTableSerializer()
+        return Response({'registers': serializer.data,
+                         'serializer_form': serializer_form},
+                        status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
-        data = JSONParser().parse(request)
-        serializer = MainTableSerializer(data=data)
+        serializer = MainTableSerializer(data=request.data)
         if serializer.is_valid():
             if check(
-                    data['date_and_time_attention'],
-                    data['application_date']):
-                return JsonResponse(
-                    {'error': 'the time entered cannot be greater than today'}, status=400)
+                    request.data['date_and_time_attention'],
+                    request.data['application_date']):
+                return Response({'serializer_form': serializer,
+                                 'message': "dates cannot be greater than today"},
+                                status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return redirect('index')
+        return Response({'serializer_form': serializer},
+                        status=status.HTTP_400_BAD_REQUEST)
 
 
 class MainDetail(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'detail.html'
+
     def get_object(self, pk):
+
         try:
             return MainTableModel.objects.get(pk=pk)
         except MainTableModel.DoesNotExist:
@@ -50,22 +61,31 @@ class MainDetail(APIView):
     def get(self, request, pk, format=None):
         queryset = self.get_object(pk)
         serializer = MainTableSerializer(queryset)
-        return JsonResponse(serializer.data)
+        return Response({'serializer': serializer,
+                         'queryset': queryset},
+                        status=status.HTTP_200_OK)
 
-    def put(self, request, pk, format=None):
+    def post(self, request, pk, format=None):
         queryset = self.get_object(pk)
         serializer = MainTableSerializer(queryset, data=request.data)
         if serializer.is_valid():
             if check(
                     request.data['date_and_time_attention'],
                     request.data['application_date']):
-                return JsonResponse(
-                    {'error': 'the time entered cannot be greater than today'}, status=400)
+                return Response({'serializer': serializer,
+                                 'queryset': queryset,
+                                 'message': "dates cannot be greater than today"},
+                                status.HTTP_400_BAD_REQUEST)
             serializer.save()
-            return JsonResponse(serializer.data, status=200)
-        return JsonResponse(serializer.errors, status=400)
+            return redirect('index')
+        return Response({'serializer': serializer,
+                         'queryset': queryset},
+                        status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk, format=None):
-        queryset = self.get_object(pk)
+
+class MainDelete(APIView):
+
+    def post(self, request, pk, format=None):
+        queryset = MainTableModel.objects.get(pk=pk)
         queryset.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return redirect('index')
