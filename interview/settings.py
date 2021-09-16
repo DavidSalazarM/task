@@ -14,6 +14,13 @@ from pathlib import Path
 import os
 import dj_database_url
 
+def parse_boolean(value):
+    if value == "True":
+        return True
+    if value == "False":
+        return False
+    raise Exception('this value "{}" is not boolean, the value should be "True" or "False" '.format(value))
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +33,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = parse_boolean(os.environ['DEBUG'])
 
 ALLOWED_HOSTS = [os.environ['ALLOWED_HOST']]
 
