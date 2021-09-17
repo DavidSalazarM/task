@@ -29,6 +29,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('crud/', include('CRUD.urls')),
     path('menu/', include(router.urls)),
-    path('', views.index, name='data_table', )
+    path('', views.data_tables, name='data_table', )
 
 ]

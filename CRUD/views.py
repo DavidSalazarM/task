@@ -12,7 +12,7 @@ from rest_framework import viewsets
 
 
 # Create your views here.
-def check(check, check_2):
+def check_time(check, check_2):
     today = datetime.now()
     print(today)
     now_1 = today.strftime("%Y-%m-%d %H:%M")
@@ -36,7 +36,7 @@ class Main(APIView):
     def post(self, request, format=None):
         serializer = MainTableSerializer(data=request.data)
         if serializer.is_valid():
-            if check(
+            if check_time(
                     request.data['date_and_time_attention'],
                     request.data['application_date']):
                 return Response({'serializer_form': serializer,
@@ -70,7 +70,7 @@ class MainDetail(APIView):
         queryset = self.get_object(pk)
         serializer = MainTableSerializer(queryset, data=request.data)
         if serializer.is_valid():
-            if check(
+            if check_time(
                     request.data['date_and_time_attention'],
                     request.data['application_date']):
                 return Response({'serializer': serializer,
@@ -92,7 +92,7 @@ class MainDelete(APIView):
         return redirect('index')
 
 
-def index(request):
+def data_tables(request):
     return render(request, 'data_table.html')
 
 
