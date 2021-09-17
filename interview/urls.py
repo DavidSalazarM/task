@@ -16,8 +16,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls.conf import include
+from django.conf.urls import include
+from rest_framework import routers
+from CRUD import views
+
+
+router = routers.DefaultRouter()
+router.register(r'data_table', views.DataTable)
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('crud/', include('CRUD.urls')),
+    path('menu/', include(router.urls)),
+    path('', views.index, name='data_table', )
+
 ]

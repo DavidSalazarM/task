@@ -14,12 +14,14 @@ from pathlib import Path
 import os
 import dj_database_url
 
+
 def parse_boolean(value):
     if value == "True":
         return True
     if value == "False":
         return False
-    raise Exception('this value "{}" is not boolean, the value should be "True" or "False" '.format(value))
+    raise Exception(
+        'this value "{}" is not boolean, the value should be "True" or "False" '.format(value))
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -48,7 +50,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'CRUD'
+    'CRUD',
+    'rest_framework_datatables'
 ]
 
 MIDDLEWARE = [
@@ -60,6 +63,20 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+        'rest_framework_datatables.renderers.DatatablesRenderer',
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'rest_framework_datatables.filters.DatatablesFilterBackend',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework_datatables.pagination.DatatablesPageNumberPagination',
+    'PAGE_SIZE': 50,
+}
 
 ROOT_URLCONF = 'interview.urls'
 
@@ -88,6 +105,7 @@ WSGI_APPLICATION = 'interview.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -161,4 +179,3 @@ SECURE_SSL_REDIRECT = False
 CSRF_COOKIE_SECURE = True
 
 SESSION_COOKIE_SECURE = True
-

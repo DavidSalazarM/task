@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <title>DataTable</title>
+      <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.css">
+      <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
+   </head>
+   <body>
+      <div class="container">
+         <a class="btn btn-primary" href="{% url 'index'%}">CRUD options</a> 
+         <div class="row">
+            <div class="col-sm-12">
+               <table id="data_table" class="table table-striped table-bordered" style="width:100%" data-server-side="true" data-ajax="menu/data_table/?format=datatables">
+                  <thead>
+                     <tr>
+                        <th data-data="id">ID</th>
+                        <th data-data="date_and_time_attention">Date and time attention</th>
+                        <th data-data="end_time_attention">End time attention</th>
+                        <th data-data="company">Company</th>
+                        <th data-data="city">City</th>
+                        <th data-data="subject">Subject</th>
+                        <th data-data="answer">Answer</th>
+                        <th data-data="application_date">Application_date</th>
+                     </tr>
+                  </thead>
+               </table>
+            </div>
+         </div>
+      </div>
+      <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+      <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+      <script src="//cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+      <script>
+         $(document).ready(function() {
+             $('#data_table').DataTable();
+         });
+         
+      </script>
+   </body>
+</html>

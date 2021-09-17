@@ -7,7 +7,8 @@ from django.http import Http404
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.renderers import TemplateHTMLRenderer
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
+from rest_framework import viewsets
 
 
 # Create your views here.
@@ -42,7 +43,7 @@ class Main(APIView):
                                  'message': "dates cannot be greater than today"},
                                 status=status.HTTP_400_BAD_REQUEST)
             serializer.save()
-            return redirect('index')
+            return redirect('data_table')
         return Response({'serializer_form': serializer},
                         status=status.HTTP_400_BAD_REQUEST)
 
@@ -89,3 +90,12 @@ class MainDelete(APIView):
         queryset = MainTableModel.objects.get(pk=pk)
         queryset.delete()
         return redirect('index')
+
+
+def index(request):
+    return render(request, 'data_table.html')
+
+
+class DataTable(viewsets.ModelViewSet):
+    queryset = MainTableModel.objects.all()
+    serializer_class = MainTableSerializer
